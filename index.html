@@ -1,59 +1,113 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Big Play Button Udio</title>
+  <title>Custom Udio Player UI</title>
   <style>
     body {
-      background: #111;
+      background: #0d0d0d;
+      font-family: Arial, Helvetica, sans-serif;
       color: white;
-      font-family: Arial;
-      text-align: center;
-      padding-top: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
 
-    #player-container {
-      display: none; /* Hide the player at start */
-      margin-top: 20px;
-    }
-
-    #play-button {
-      background: #ff4757;
-      color: white;
-      border: none;
-      padding: 30px 60px;
-      font-size: 40px;
+    .player-wrapper {
+      width: 320px;
+      padding: 25px;
+      background: #1a1a1a;
       border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255, 0, 80, 0.4);
+      text-align: center;
+    }
+
+    .big-button {
+      font-size: 45px;
+      background: #ff2e63;
+      border: none;
+      padding: 25px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
       cursor: pointer;
+      color: white;
       transition: 0.3s;
     }
 
-    #play-button:hover {
-      background: #ff6b81;
-      transform: scale(1.05);
+    .big-button:hover {
+      transform: scale(1.1);
+      background: #ff4f7e;
+    }
+
+    /* progress bar */
+    #progress {
+      width: 100%;
+      margin-top: 20px;
+      -webkit-appearance: none;
+      height: 10px;
+      border-radius: 5px;
+      background: #444;
+    }
+
+    #progress::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #ff2e63;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    #udio-frame {
+      width: 0px;
+      height: 0px;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
     }
   </style>
 </head>
+
 <body>
 
-  <button id="play-button">▶ PLAY</button>
+<div class="player-wrapper">
 
-  <div id="player-container">
-    <iframe 
-      id="udio-player"
-      src="https://www.udio.com/embed/8b6MECYAqSLp63F8DRPuFn"
-      width="100%"
-      height="400"
-      frameborder="0"
-      allow="autoplay">
-    </iframe>
-  </div>
+  <button class="big-button" id="playBtn">▶</button>
 
-  <script>
-    document.getElementById("play-button").onclick = function() {
-      document.getElementById("player-container").style.display = "block";
-      document.getElementById("play-button").style.display = "none";
-    };
-  </script>
+  <input type="range" id="progress" min="0" max="100" value="0">
+
+</div>
+
+<!-- Hidden Udio Player -->
+<iframe
+  id="udio-frame"
+  src="https://www.udio.com/embed/8b6MECYAqSLp63F8DRPuFn"
+  allow="autoplay">
+</iframe>
+
+<script>
+  let playing = false;
+  const playBtn = document.getElementById("playBtn");
+  const iframe = document.getElementById("udio-frame");
+
+  playBtn.onclick = () => {
+    if (!playing) {
+      // Play (Reveal iframe just enough to autoplay)
+      iframe.style.width = "1px";
+      iframe.style.height = "1px";
+
+      playBtn.textContent = "⏸";
+      playing = true;
+    } else {
+      // Pause = reload hidden iframe (hack, since we cannot control Udio directly)
+      iframe.src = iframe.src;
+      playBtn.textContent = "▶";
+      playing = false;
+    }
+  };
+</script>
 
 </body>
 </html>
